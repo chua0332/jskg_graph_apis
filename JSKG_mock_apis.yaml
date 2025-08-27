@@ -1,0 +1,349 @@
+openapi: 3.0.3
+info:
+  title: Jobs & Skills Knowledge Graph API (Mock)
+  version: 0.0.5
+  description: >
+    Mock spec for 4 endpoints.
+    Changes: listOfJobs/pathwaysTo/pathwaysFrom now require a `date` query parameter (ISO date string).
+
+servers:
+  - url: https://mock.example.com
+    description: Mock server
+  - url: http://localhost:8000
+    description: Local dev
+
+tags:
+  - name: Jobs
+  - name: Pathways
+  - name: Skills
+
+paths:
+  /api/v1/listOfJobs:
+    get:
+      tags: [Jobs]
+      summary: List available SSOC jobs
+      parameters:
+        - name: date
+          in: query
+          required: true
+          description: Data snapshot date (YYYY-MM-DD)
+          schema: { type: string, format: date, example: "2025-03-31" }
+      responses:
+        '200':
+          description: Array of job roles
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/JobSimple' }
+              example:
+                - { ssocTitle: "accountant (excluding tax accountant)", ssocCode: "24111" }
+                - { ssocTitle: "actuary", ssocCode: "21213" }
+                - { ssocTitle: "administration manager", ssocCode: "12112" }
+                - { ssocTitle: "advertising salesman", ssocCode: "33392" }
+                - { ssocTitle: "advertising/public relations manager", ssocCode: "12221" }
+                - { ssocTitle: "advocate/solicitor (practising)", ssocCode: "26111" }
+                - { ssocTitle: "aeronautical engineer", ssocCode: "21471" }
+                - { ssocTitle: "aeronautical engineering technician", ssocCode: "31211" }
+                - { ssocTitle: "after sales adviser/client account service executive", ssocCode: "33222" }
+                - { ssocTitle: "aged care services manager", ssocCode: "13430" }
+
+  /api/v1/pathwaysTo/{ssocCode}:
+    get:
+      tags: [Pathways]
+      summary: Suggested transitions **to** this SSOC
+      parameters:
+        - name: ssocCode
+          in: path
+          required: true
+          schema: { type: string }
+          description: Target SSOC code (e.g., "21222")
+        - name: date
+          in: query
+          required: true
+          description: Data snapshot date (YYYY-MM-DD)
+          schema: { type: string, format: date, example: "2025-03-31" }
+      responses:
+        '200':
+          description: Array of inbound pathway items
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/PathwayToItem' }
+              example:
+                - destinationRole:
+                    ssocTitle: "research and development manager"
+                    ssocCode: "12230"
+                  ssocSimilarityScore: 0.47555953
+                  ssocSimilarityCategory: "medium"
+                  ssocSkillGap:
+                    - "Collaboration"
+                    - "Innovation Management"
+                    - "Communication"
+                    - "Research Findings Communication"
+                    - "Applied Research and Development Management"
+                    - "Creative Thinking"
+                    - "Change Management"
+                    - "Quality Assurance and Audit"
+                    - "Collaborative Practices with Stakeholders across Disciplines"
+                    - "Materials Qualification"
+                    - "Adaptability"
+                    - "Technical Presentation"
+                    - "Continuous Improvement Management"
+                    - "Critical Thinking"
+                    - "Regulatory Compliance"
+                    - "Technical Report Writing"
+                    - "Research Design"
+                  ssocMedianWage: 10262
+                  jobCount: 1052
+                - destinationRole:
+                    ssocTitle: "digital forensics specialist"
+                    ssocCode: "25244"
+                  ssocSimilarityScore: 0.44612595
+                  ssocSimilarityCategory: "medium"
+                  ssocSkillGap:
+                    - "Project Execution and Control"
+                    - "Collaboration"
+                    - "Corporate and Business Law"
+                    - "Fraud Detection and Prevention"
+                    - "Programming and Coding"
+                    - "Professional Scepticism and Judgment"
+                    - "Digital Forensics"
+                    - "Litigation Support"
+                    - "Evidence Management"
+                    - "Technology Scanning"
+                    - "Financial Crime Laws and Regulations"
+                    - "Regulatory Risk Assessment"
+                    - "Financial Statements Analysis"
+                    - "Fraud Investigation Planning and Execution"
+                    - "Cyber Forensics"
+                    - "Forensic Data Analytics"
+                    - "Accounting Standards"
+                    - "Cybersecurity"
+                    - "Professional and Business Ethics"
+                  ssocMedianWage: 11298
+                  jobCount: 162
+                - destinationRole:
+                    ssocTitle: "enterprise/solution architect"
+                    ssocCode: "25113"
+                  ssocSimilarityScore: 0.41881227
+                  ssocSimilarityCategory: "medium"
+                  ssocSkillGap:
+                    - "Organisational Design"
+                    - "Solution Architecture"
+                    - "Collaboration"
+                    - "IT Strategy"
+                    - "Performance Management"
+                    - "Partnership Management"
+                    - "Design Thinking Practice"
+                    - "Enterprise Architecture"
+                    - "Change Management"
+                    - "Networking"
+                    - "Business Agility"
+                    - "Sustainability Management"
+                    - "Strategy Planning"
+                    - "Business Innovation"
+                    - "Project Feasibility Assessment"
+                  ssocMedianWage: 13682
+                  jobCount: 5595
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+  /api/v1/pathwaysFrom/{ssocCode}:
+    get:
+      tags: [Pathways]
+      summary: Suggested transitions **from** this SSOC
+      parameters:
+        - name: ssocCode
+          in: path
+          required: true
+          schema: { type: string }
+          description: Source SSOC code (e.g., "21222")
+        - name: date
+          in: query
+          required: true
+          description: Data snapshot date (YYYY-MM-DD)
+          schema: { type: string, format: date, example: "2025-03-31" }
+      responses:
+        '200':
+          description: Array of outbound pathway items
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/PathwayFromItem' }
+              example:
+                - sourceRole:
+                    ssocTitle: "statistical officer/data analyst"
+                    ssocCode: "21231"
+                  ssocSimilarityScore: 0.649368
+                  ssocSimilarityCategory: "high"
+                  ssocSkillGap:
+                    - "Data Migration"
+                    - "Strategy Execution"
+                    - "Quality Standards"
+                    - "Computational Modelling"
+                    - "Applications Development"
+                    - "Data and Statistical Analytics"
+                  ssocMedianWage: 6235
+                  jobCount: 6064
+                - sourceRole:
+                    ssocTitle: "operations research analyst"
+                    ssocCode: "21212"
+                  ssocSimilarityScore: 0.62652063
+                  ssocSimilarityCategory: "high"
+                  ssocSkillGap:
+                    - "Data Strategy"
+                    - "Data Migration"
+                    - "Strategy Execution"
+                    - "Data Engineering"
+                    - "Data Ethics"
+                    - "Quality Standards"
+                    - "Computational Modelling"
+                    - "Applications Development"
+                    - "Data Design"
+                    - "Data Governance"
+                    - "Emerging Technology Synthesis"
+                    - "Database Administration"
+                    - "Data and Statistical Analytics"
+                  ssocMedianWage: 6503
+                  jobCount: 965
+                - sourceRole:
+                    ssocTitle: "statistician"
+                    ssocCode: "21221"
+                  ssocSimilarityScore: 0.616549
+                  ssocSimilarityCategory: "high"
+                  ssocSkillGap:
+                    - "Data Strategy"
+                    - "Data Migration"
+                    - "Data Storytelling and Visualisation"
+                    - "Business Needs Analysis"
+                    - "Data Engineering"
+                    - "Project Management"
+                    - "Data Ethics"
+                    - "Quality Standards"
+                    - "Analytics and Computational Modelling"
+                    - "Computational Modelling"
+                    - "Applications Development"
+                    - "Data Governance"
+                    - "Emerging Technology Synthesis"
+                    - "Database Administration"
+                  ssocMedianWage: 4382
+                  jobCount: 50
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+  /api/v1/skills/{ssocCode}:
+    get:
+      tags: [Skills]
+      summary: Get the top N skills for a job (SSOC)
+      parameters:
+        - name: ssocCode
+          in: path
+          required: true
+          schema: { type: string }
+          description: SSOC code (e.g., "21222")
+        - name: topN
+          in: query
+          required: false
+          schema: { type: integer, minimum: 1, maximum: 49, default: 10 }
+          description: Number of skills to return
+      responses:
+        '200':
+          description: Array of skill titles
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { type: string }
+              example:
+                - "Data Engineering"
+                - "Data Governance"
+                - "Project Management"
+                - "Emerging Technology Synthesis"
+                - "Stakeholder Management"
+                - "Data Design"
+                - "Data and Statistical Analytics"
+                - "Computational Modelling"
+                - "Business Needs Analysis"
+                - "Quality Standards"
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+
+components:
+  schemas:
+    JobSimple:
+      type: object
+      properties:
+        ssocTitle: { type: string }
+        ssocCode: { type: string }
+      required: [ssocTitle, ssocCode]
+
+    DestinationRole:
+      type: object
+      properties:
+        ssocTitle: { type: string }
+        ssocCode: { type: string }
+      required: [ssocTitle, ssocCode]
+
+    PathwayToItem:
+      type: object
+      properties:
+        destinationRole:
+          $ref: '#/components/schemas/DestinationRole'
+        ssocSimilarityScore: { type: number }
+        ssocSimilarityCategory: { type: string, description: "e.g., low | medium | high" }
+        ssocSkillGap:
+          type: array
+          items: { type: string }
+        ssocMedianWage: { type: integer, description: "Monthly median wage (SGD)" }
+        jobCount: { type: integer }
+      required:
+        - destinationRole
+        - ssocSimilarityScore
+        - ssocSimilarityCategory
+        - ssocSkillGap
+        - ssocMedianWage
+        - jobCount
+
+    SourceRole:
+      type: object
+      properties:
+        ssocTitle: { type: string }
+        ssocCode: { type: string }
+      required: [ssocTitle, ssocCode]
+
+    PathwayFromItem:
+      type: object
+      properties:
+        sourceRole:
+          $ref: '#/components/schemas/SourceRole'
+        ssocSimilarityScore: { type: number }
+        ssocSimilarityCategory: { type: string, description: "e.g., low | medium | high" }
+        ssocSkillGap:
+          type: array
+          items: { type: string }
+        ssocMedianWage: { type: integer, description: "Monthly median wage (SGD)" }
+        jobCount: { type: integer }
+      required:
+        - sourceRole
+        - ssocSimilarityScore
+        - ssocSimilarityCategory
+        - ssocSkillGap
+        - ssocMedianWage
+        - jobCount
+
+    Error:
+      type: object
+      properties:
+        detail: { type: string }
+        code: { type: string }
+
+  responses:
+    NotFoundError:
+      description: Resource not found
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          example: { detail: "SSOC code not found", code: "not_found" }
