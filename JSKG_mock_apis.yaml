@@ -4,7 +4,7 @@ info:
   version: 0.0.5
   description: >
     Mock spec for 4 endpoints.
-    Changes: listOfJobs/pathwaysTo/pathwaysFrom now require a `date` query parameter (ISO date string).
+    Changes: /listOfJobs, /pathwaysTo, /pathwaysFrom APIs now require a `date` query parameter (ISO date string).
 
 servers:
   - url: https://mock.example.com
