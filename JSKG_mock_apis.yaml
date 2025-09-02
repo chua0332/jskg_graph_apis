@@ -23,7 +23,7 @@ paths:
       tags: [Jobs]
       summary: List available SSOC jobs
       parameters:
-        - name: date
+        - name: jskgStateDate
           in: query
           required: true
           description: Data snapshot date (YYYY-MM-DD)
@@ -58,7 +58,7 @@ paths:
           required: true
           schema: { type: string }
           description: Target SSOC code (e.g., "21222")
-        - name: date
+        - name: jskgStateDate
           in: query
           required: true
           description: Data snapshot date (YYYY-MM-DD)
@@ -160,7 +160,7 @@ paths:
           required: true
           schema: { type: string }
           description: Source SSOC code (e.g., "21222")
-        - name: date
+        - name: jskgStateDate
           in: query
           required: true
           description: Data snapshot date (YYYY-MM-DD)
